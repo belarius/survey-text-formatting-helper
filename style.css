@@ -1,0 +1,598 @@
+/* Variables */
+:root {
+  --spacing: 1rem;
+  --half-spacing: calc(var(--spacing) / 2);
+  --quarter-spacing: calc(var(--spacing) / 4);
+  --line-height: 1.5;
+
+  --not-black: #191919;
+  --not-white: #FFF9F2;
+  --primary-accent: #83254f;
+  --secondary-accent: #FFAB5C;
+  --tertiary-accent: #E56B6F;
+
+  --black: #000000;
+  --white: #ffffff;
+
+  --border: solid 2px var(--not-black);
+  --border-radius: var(--half-spacing);
+
+  --mark-bg: #f2f2f2;
+  --bold-mark: #ff0000;
+  --italic-mark: #00ff00;
+  --strike-mark: #0000ff;
+  --size-mark: #9966ff;
+  --opacity-mark: #707033;
+  --color-mark: #ff99ff;
+  --mark-mark: #00aa00;
+  --upper-mark: #cece00;
+  --lower-mark: #993377;
+  --blur-mark: #33dddd;
+  --rev-mark: #ff8000;
+}
+
+/* Font Definitions */
+@font-face {
+  font-family: 'atkinson-hyperlegible';
+  src: url(./assets/fonts/AtkinsonHyperlegibleNext-Regular.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: 'atkinson-hyperlegible-mono';
+  src: url(./assets/fonts/AtkinsonHyperlegibleMono-Regular.woff2) format("woff2");
+}
+
+/* General Element Styles */
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'atkinson-hyperlegible', sans-serif;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  margin: 0;
+  background-color: var(--not-white);
+  color: var(--not-black);
+}
+
+header {
+  text-align: center;
+}
+
+header h1 {
+  font-weight: normal;
+  margin-top: calc(var(--spacing) * 2);
+  margin-bottom: var(--spacing);
+}
+
+section h3 {
+  margin: 0 0 var(--spacing);
+  text-align: center;
+}
+
+code {
+  font-family: 'atkinson-hyperlegible-mono', monospace;
+}
+
+blockquote {
+  border-left: var(--border);
+  border-color: #cccccc;
+  margin: var(--half-spacing);
+  padding-left: var(--half-spacing);
+}
+
+fieldset,
+textarea,
+input,
+button,
+select,
+option,
+details {
+  border: var(--border);
+  border-radius: var(--border-radius);
+}
+
+textarea,
+input,
+button,
+select,
+option,
+details summary {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: var(--line-height);
+  padding: var(--half-spacing);
+  padding-left: var(--spacing);
+  accent-color: var(--secondary-accent);
+}
+
+input[type="checkbox"],
+input[type="checkbox"]+label,
+button,
+select,
+details summary {
+  cursor: pointer;
+}
+
+button,
+select,
+details summary {
+  background-color: var(--primary-accent);
+  color: var(--white);
+}
+
+select,
+fieldset legend {
+  font-weight: bold;
+}
+
+option {
+  background-color: var(--white);
+  color: var(--not-black);
+}
+
+/* Fieldset Styles */
+fieldset {
+  margin: 0;
+}
+
+fieldset legend {
+  padding: 0 var(--spacing);
+  margin: auto;
+}
+
+/* Details Styles */
+details {
+  margin-top: var(--spacing);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--white);
+}
+
+details summary {
+  border: none;
+}
+
+details[open] {
+  background-color: var(--white);
+}
+
+details[open] summary {
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+details summary~div {
+  padding: var(--spacing);
+}
+
+/* Styles to apply different font family types (sans-serif/serif/monospace) */
+.sans-serif-font,
+body:has(select option[value="sans-serif"]:checked) .dynamic-font {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.serif-font,
+body:has(select option[value="serif"]:checked) .dynamic-font {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.monospace-font,
+body:has(select option[value="monospace"]:checked) .dynamic-font {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Start of Specific Page Styles */
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  margin: 0 var(--spacing) var(--spacing);
+}
+
+@media (min-width: 1369px) {
+  main {
+    width: 75vw;
+  }
+
+  section {
+    margin: 0 0 var(--spacing);
+  }
+}
+
+/* Display Options Section */
+.display-opts-section {
+  display: flex;
+  justify-content: center;
+  margin: 0 var(--spacing) var(--spacing);
+}
+
+.display-opts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-right: calc(var(--spacing) * -1);
+}
+
+.display-opts {
+  background-color: var(--white);
+}
+
+.display-opts .field {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-right: var(--spacing);
+  position: relative;
+}
+
+.display-opts label {
+  font-weight: bold;
+}
+
+.display-opts select {
+  padding-left: var(--spacing);
+  padding-right: calc(var(--spacing) * 1.5);
+  flex-grow: 1;
+  appearance: none;
+}
+
+.display-opts .field:has(select)::after {
+  content: '⏷';
+  position: absolute;
+  color: var(--white);
+  right: var(--half-spacing);
+  top: calc(var(--spacing) * 1.85);
+  pointer-events: none;
+}
+
+.display-opts .color-input-wrap {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+}
+
+.display-opts .color-input-wrap::before {
+  content: ' #';
+  position: absolute;
+  top: calc(var(--spacing) / 1.4);
+  left: calc(var(--half-spacing) + var(--quarter-spacing));
+}
+
+.display-opts .color-input-wrap .color-input {
+  flex-grow: 1;
+  padding-left: calc(var(--spacing) * 1.5);
+}
+
+.display-opts .color-input-wrap .color-input:invalid {
+  background: lightpink;
+}
+
+/* Notifs Section */
+#notifications {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.notification {
+  flex: 1 1 0;
+  text-align: center;
+  min-width: 33%;
+  margin: 0 0 var(--spacing);
+  padding: var(--half-spacing);
+  background-color: var(--secondary-accent);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  font-weight: bold;
+}
+
+.warning {
+  background-color: var(--tertiary-accent);
+}
+
+/* Parser Input Columns Section */
+.input-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.input-area .column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  margin: 0 0 var(--spacing);
+  overflow-wrap: break-word;
+}
+
+.input-area .column:last-child {
+  margin-bottom: 0;
+}
+
+.input-area .text-grow {
+  flex: 1 1 auto;
+  white-space: pre-line;
+}
+
+/* Notifs & Columns at Large Width */
+@media (min-width: 601px) {
+  #notifications {
+    flex-direction: row;
+    margin: 0 var(--half-spacing);
+  }
+
+  .notification {
+    margin: 0 var(--half-spacing) var(--spacing);
+  }
+
+  .input-area {
+    flex-direction: row;
+  }
+
+  .input-area .column {
+    margin: 0 var(--half-spacing) 0;
+  }
+
+  .input-area .column:first-child {
+    margin-left: 0;
+  }
+
+  .input-area .column:last-child {
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 1369px) {
+  #notifications {
+    margin: 0 calc(var(--half-spacing) * -1);
+  }
+}
+
+/* Input Column */
+.input-area textarea {
+  font-family: initial;
+  margin: 0;
+  padding: var(--spacing);
+  min-height: 200px;
+  resize: vertical;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-accent) transparent;
+  scrollbar-gutter: stable;
+}
+
+/* Input Column HTML Options */
+.input-area .html-opts {
+  margin-top: var(--spacing);
+  background-color: var(--white);
+}
+
+.input-area .html-opts .checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.input-area .html-opts .checkbox label {
+  margin-left: var(--half-spacing);
+}
+
+/* Markup & Output Columns */
+.input-area #text-marked,
+.input-area #text-output {
+  min-height: 200px;
+  background: var(--white);
+  line-height: var(--line-height);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing);
+  word-break: break-word;
+}
+
+/* Markup Column */
+.input-area .marked-footer ul {
+  list-style: inside;
+  margin: 0;
+  padding: 0;
+}
+
+.input-area .marked-footer li {
+  margin: var(--quarter-spacing) 0;
+  padding: var(--quarter-spacing) var(--spacing);
+}
+
+/* Markup Column Highlighting Styles */
+.legend-text {
+  margin: var(--spacing) 0 0;
+}
+
+.legend-text .null-mark,
+.legend-text .per-char {
+  white-space: nowrap;
+}
+
+.per-char span:not(.null-mark) {
+  border-left: var(--border);
+}
+
+.per-char span:not(.null-mark)>.mark:first-of-type {
+  margin-left: 1px;
+}
+
+.mark {
+  border-bottom: var(--border);
+  /* background-color: var(--mark-bg); */
+  padding-bottom: 0px;
+}
+
+.mark>.mark {
+  border-bottom: var(--border);
+  background-color: transparent;
+  padding-bottom: 3px;
+}
+
+.mark>.mark>.mark {
+  border-bottom: var(--border);
+  background-color: transparent;
+  padding-bottom: 6px;
+}
+
+.mark>.mark>.mark>.mark {
+  border-bottom: var(--border);
+  background-color: transparent;
+  padding-bottom: 9px;
+}
+
+.mark>.mark>.mark>.mark>.mark {
+  border-bottom: var(--border);
+  background-color: transparent;
+  padding-bottom: 12px;
+}
+
+.mark>.mark>.mark>.mark>.mark>.mark {
+  border-bottom: var(--border);
+  background-color: transparent;
+  padding-bottom: 15px;
+}
+
+.null {
+  background-color: color-mix(in srgb, var(--black) 10%, var(--white) 90%);
+  border: var(--border);
+  border-color: var(--black);
+  border-top-color: transparent;
+}
+
+.bold {
+  background-color: color-mix(in srgb, var(--bold-mark) 15%, var(--white) 85%);
+  border-color: var(--bold-mark) !important;
+}
+
+.italic {
+  background-color: color-mix(in srgb, var(--italic-mark) 15%, var(--white) 85%);
+  border-color: var(--italic-mark) !important;
+}
+
+.strike {
+  background-color: color-mix(in srgb, var(--strike-mark) 15%, var(--white) 85%);
+  border-color: var(--strike-mark) !important;
+}
+
+.size {
+  background-color: color-mix(in srgb, var(--size-mark) 15%, var(--white) 85%);
+  border-color: var(--size-mark) !important;
+}
+
+.opacity {
+  background-color: color-mix(in srgb, var(--opacity-mark) 15%, var(--white) 85%);
+  border-color: var(--opacity-mark) !important;
+}
+
+.color {
+  background-color: color-mix(in srgb, var(--color-mark) 15%, var(--white) 85%);
+  border-color: var(--color-mark) !important;
+}
+
+.marked {
+  background-color: color-mix(in srgb, var(--mark-mark) 15%, var(--white) 85%);
+  border-color: var(--mark-mark) !important;
+}
+
+.upper {
+  background-color: color-mix(in srgb, var(--upper-mark) 15%, var(--white) 85%);
+  border-color: var(--upper-mark) !important;
+}
+
+.lower {
+  background-color: color-mix(in srgb, var(--lower-mark) 15%, var(--white) 85%);
+  border-color: var(--lower-mark) !important;
+}
+
+.blur {
+  background-color: color-mix(in srgb, var(--blur-mark) 15%, var(--white) 85%);
+  border-color: var(--blur-mark) !important;
+}
+
+.rev {
+  background-color: color-mix(in srgb, var(--rev-mark) 15%, var(--white) 85%);
+  border-color: var(--rev-mark) !important;
+}
+
+.tag-error {
+  border: solid 4px;
+  border-color: red;
+  background-color: red;
+  color: white;
+}
+
+/* Output Column */
+.input-area .output-footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--spacing);
+}
+
+.input-area details summary {
+  text-align: center;
+}
+
+.input-area #html-output {
+  font-family: 'atkinson-hyperlegible-mono', monospace;
+  max-height: 200px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-accent) transparent;
+  scrollbar-gutter: stable;
+}
+
+/* Instructions Section */
+.instructions details {
+  margin: var(--spacing) 0;
+}
+
+.instructions summary {
+  font-size: 1.25rem;
+}
+
+.instructions summary span {
+  white-space: nowrap;
+}
+
+.instructions summary~div p {
+  margin: 0;
+}
+
+.instructions summary~div p+p,
+.instructions summary~div blockquote+p {
+  margin-top: 1rem;
+}
+
+/* Instructions at Large Width */
+@media (min-width: 601px) {
+  .instructions details {
+    margin: var(--spacing);
+  }
+}
+
+/* Footer */
+footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background: var(--primary-accent);
+  color: var(--white);
+  border-top: var(--border);
+  padding: var(--spacing);
+}
+
+footer a {
+  color: var(--secondary-accent);
+}
+
+footer a:visited {
+  color: var(--color-mark);
+}
