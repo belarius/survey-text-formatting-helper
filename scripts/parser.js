@@ -77,6 +77,19 @@ const parseRules = [
       return formatting;
     }
   },
+  // No Select
+  {
+    // Detects instances of [noselect]
+    regex: /\[noselect\]/g,
+    // Intermediate markup
+    marked: '<span class="noselect mark">',
+    // Replaces with <span style="-webkit-user-select: none; -ms-user-select: none; user-select:none;">
+    out: function (str) {
+      // Set what the HTML element string is
+      let formatting = '<span style="-webkit-user-select: none; -ms-user-select: none; user-select:none;">'
+      return formatting;
+    }
+  },
   // Font Size
   {
     // Detects instances of [size:val1]
