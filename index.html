@@ -59,7 +59,7 @@
         <h3>Text Input</h3>
         <!-- Input textarea -->
         <textarea id="textarea-input" name="textarea-input" class="text-grow dynamic-font"
-          placeholder="Type your text here">A [rev][italic]tnorf rehtaew[/italic][/rev] was [null]stalled[/null] out in the [size:0%]Atlantic[/size][bold]Pacific[/bold] - like a [mark:#000000][color:#de9857]lonely person[/color][/mark], [blur:1px]lost in thought[/blur], [opacity:0.6]oblivious [opacity:0.6]of [opacity:0.6]time.[/opacity][/opacity][/opacity]</textarea>
+          placeholder="Type your text here">A [rev][italic]tnorf rehtaew[/italic][/rev] was [null]stalled[/null] out in the [size:0%]Atlantic[/size][bold][noselect]Pacific[/bold][/noselect] - like a [mark:#000000][color:#de9857]lonely person[/color][/mark], [blur:1px]lost in thought[/blur], [opacity:0.6]oblivious [opacity:0.6]of [opacity:0.6]time.[/opacity][/opacity][/opacity]</textarea>
         <!-- Parser options (screen reader accessibility toggle, per-letter formatting toggle) -->
         <fieldset class="html-opts">
           <legend>HTML Options</legend>
@@ -86,6 +86,7 @@
                 <li><span class="italic mark">Italic</span></li>
                 <li><span class="strike mark">Strikethrough</span></li>
                 <li><span class="size mark">Font Size</span></li>
+                <li><span class="noselect mark">Unselectable Text</span></li>
                 <li><span class="opacity mark">Opacity</span></li>
                 <li><span class="color mark">Colored Text</span></li>
                 <li><span class="marked mark">Marked Text</span></li>
@@ -184,6 +185,19 @@
           <p>Will become this:</p>
           <blockquote>This text is <span style="font-size: 0%;" aria-hidden="true">fully hidden from view</span>completely normal.</blockquote>
           <p>The undetectable text will still be present if the whole block of text is copied and pasted, and will still be read out by screen readers (unless the 'Include Screen Reader Accessibility' toggle is on).</p>
+        </div>
+      </details>
+      <details>
+        <summary>Unselectable Text → [noselect] <span>[/noselect]</span></summary>
+        <div>
+          <p>This tag prevents the selection of characters within that range. These are not substituted by blank spaces. Instead, it's as though those characters never existed.</p>
+          <p>For example, this:</p>
+          <blockquote>I [noselect]don't [/noselect]enjoy the sound of distant thunder.</blockquote>
+          <p>Will become this:</p>
+          <blockquote>I <span style="-webkit-user-select: none; -ms-user-select: none; user-select:none;">don't </span>enjoy the sound of distant thunder.</blockquote>
+          <p>At a glance, this text doesn't look like it has received any special formatting. But if you select the affected passage with your cursor, you'll find that the word "don't" doesn't receive any highlighting, and if you copy that text into another window, what you should paste is the following:</p>
+          <blockquote>I enjoy the sound of distant thunder.</blockquote>
+          <p>This has the opposite effect of setting Font Size to 0% that is described above. Rather than inserting extra, hidden characters into a selected passage, this causes characters that are visible to get omitted when copying and pasting.</p>
         </div>
       </details>
       <details>
