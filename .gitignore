@@ -1,0 +1,6 @@
+*.xcf
+.DS_Store
+assets/.DS_Store
+assets/fonts/.DS_Store
+scripts/.DS_Store
+assets/.DS_Store
