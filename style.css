@@ -26,9 +26,10 @@
   --color-mark: #ff99ff;
   --mark-mark: #00aa00;
   --upper-mark: #cece00;
-  --lower-mark: #993377;
+  --lower-mark: #dd1166;
   --blur-mark: #33dddd;
   --rev-mark: #ff8000;
+  --noselect-mark: #dd22ff;
 }
 
 /* Font Definitions */
@@ -520,6 +521,13 @@ section {
 .rev {
   background-color: color-mix(in srgb, var(--rev-mark) 15%, var(--white) 85%);
   border-color: var(--rev-mark) !important;
+}
+
+.noselect {
+  background-color: color-mix(in srgb, var(--noselect-mark) 35%, var(--white) 65%);
+  border-color: var(--noselect-mark) !important;
+  color: color-mix(in srgb, var(--white) 50%, var(--black) 50%);
+  font-weight: bold;
 }
 
 .tag-error {
