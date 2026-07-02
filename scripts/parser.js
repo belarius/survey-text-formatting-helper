@@ -23,9 +23,13 @@ const htmlRegex = /(<([^>]+)>)/gi;
 // Set up a variable to hold the input listener and a counter for how many attempts the listener setup function has made
 let inputListener, formSubmit, inputListenerSetupTries = 0;
 
+// Set up object for color marking rules
+let markupColors = {};
+
 const parseRules = [
   // Null
   {
+    name: 'Null',
     // Detects instances of [null]
     regex: /\[null\]/g,
     // Intermediate markup
@@ -38,10 +42,11 @@ const parseRules = [
   },
   // Bold
   {
+    name: 'Bold',
     // Detects instances of [bold]
     regex: /\[bold\]/g,
     // Intermediate markup
-    marked: '<span class="bold mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-weight:bold;">
     out: function (str) {
       // Set what the HTML element string is
@@ -51,10 +56,11 @@ const parseRules = [
   },
   // Italic
   {
+    name: 'Italic',
     // Detects instances of [italic]
     regex: /\[italic\]/g,
     // Intermediate markup
-    marked: '<span class="italic mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-style:italic;">
     out: function (str) {
       // Set what the HTML element string is
@@ -64,10 +70,11 @@ const parseRules = [
   },
   // Strikethrough
   {
+    name: 'Strikethrough',
     // Detects instances of [strike]val1[/strike]
     regex: /\[strike\]/g,
     // Intermediate markup
-    marked: '<span class="strike mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-decoration:line-through;">
     out: function (str) {
       // Set what the HTML element string is
@@ -79,10 +86,11 @@ const parseRules = [
   },
   // No Select
   {
+    name: 'Unselectable Text',
     // Detects instances of [noselect]
     regex: /\[noselect\]/g,
     // Intermediate markup
-    marked: '<span class="noselect mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="-webkit-user-select: none; -ms-user-select: none; user-select:none;">
     out: function (str) {
       // Set what the HTML element string is
@@ -92,10 +100,11 @@ const parseRules = [
   },
   // Font Size
   {
+    name: 'Font Size',
     // Detects instances of [size:val1]
     regex: /\[size:((?:\d*?|\d+?.\d+?)(?:%|px|rem|em))\]/g,
     // Intermediate markup
-    marked: '<span class="size mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-size:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -108,10 +117,11 @@ const parseRules = [
   },
   // Opacity
   {
+    name: 'Opacity',
     // Detects instances of [opacity:val1]
     regex: /\[opacity:((?:0|1)(?:\.\d+?)*?)\]/g,
     // Intermediate markup
-    marked: '<span class="opacity mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="opacity:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -124,10 +134,11 @@ const parseRules = [
   },
   // Text Color
   {
+    name: 'Colored Text',
     // Detects instances of [color:val1]
     regex: /\[color:(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}))\]/g,
     // Intermediate markup
-    marked: '<span class="color mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="color:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -139,10 +150,11 @@ const parseRules = [
   },
   // Highlight Color
   {
+    name: 'Marked Text',
     // Detects instances of [mark:val1]
     regex: /\[mark:(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}))\]/g,
     // Intermediate markup
-    marked: '<span class="marked mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="background-color:val1;">
     out: function (str, group1, group2) {
       // Set what the HTML element string is
@@ -154,10 +166,11 @@ const parseRules = [
   },
   // Uppercase
   {
+    name: 'Uppercase',
     // Detects instances of [upper]
     regex: /\[upper\]/g,
     // Intermediate markup
-    marked: '<span class="upper mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-transform:uppercase;">
     out: function (str) {
       // Set what the HTML element string is
@@ -167,10 +180,11 @@ const parseRules = [
   },
   // Lowercase
   {
+    name: 'Lowercase',
     // Detects instances of [lower]
     regex: /\[lower\]/g,
     // Intermediate markup
-    marked: '<span class="lower mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-transform:lowercase;">
     out: function (str) {
       // Set what the HTML element string is
@@ -180,10 +194,11 @@ const parseRules = [
   },
   // Blurred
   {
+    name: 'Blurred Text',
     // Detects instances of [blur:val1]
     regex: /\[blur:(\d+(?:\.\d+?)*?(?:px|rem|em))\]/g,
     // Intermediate markup
-    marked: '<span class="blur mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="filter:blur(val1);">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -196,10 +211,11 @@ const parseRules = [
   },
   // Reversed
   {
+    name: 'Reversed Text',
     // Detects instances of [rev]
     regex: /\[rev\]/g,
     // Intermediate markup
-    marked: '<span class="rev mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="direction:rtl; unicode-bidi:bidi-override;">
     // Optionally adds a second span that has the readable value but is invisible if the accessibility toggle is on
     out: function (str) {
@@ -331,6 +347,15 @@ function parse(formData) {
   const str = formData.get('textarea-input').replaceAll('<', '⸦').replaceAll('>', '⸧');
   // Create variables for the eventual outputs
   let marked = '', output = '';
+
+  // Clear the markup color object
+  markupColors = {};
+  const markupList = document.getElementById('markup-colors-list');
+  if (markupList) {
+    while (markupList.firstChild) {
+      markupList.removeChild(markupList.lastChild);
+    }
+  }
 
   // Set the regex that detects any square bracket tags
   let tagRegex = /(\[(?:\/?[^\]^\/^ ^\n]+?)\])/;
@@ -580,10 +605,50 @@ function replaceOpenTag(tag) {
   parseRules.forEach((rule) => {
     // First for the marked version
     marked = marked.replace(rule.regex, rule.marked);
+    // If it hits the current matching regex rule
+    if (rule.regex.exec(tag)) {
+      // Call to the applyMarkedTagColor function to get the correct color mark classes
+      marked = applyMarkedTagColor(tag, rule, marked);
+    }
     // Then for the output version
     output = output.replace(rule.regex, rule.out);
   });
   return { marked: marked, output: output };
+}
+
+// Function to apply dynamic color class to marked tags
+function applyMarkedTagColor(tag, rule, marked) {
+  // Extract the current tag name from the input tag
+  let tagName = tag.replace(/(\[|\/|\])/g, '').split(':')[0];
+  // If that tag isn't in the object of cataloged markupColors
+  if (markupColors[tagName] == undefined && tagName != 'null') {
+    // Add the tag into the catalog with the next color and underline style
+    markupColors[tagName] = 'color' + (Object.keys(markupColors).length % 10) + ' underline' + Math.floor(Object.keys(markupColors).length / 10);
+    console.log('New: ', markupColors[tagName]);
+    // Get the markup legend list
+    const markupList = document.getElementById('markup-colors-list');
+    // If the list is found
+    if (markupList) {
+      // Create a new li element and span element
+      const newMarkup = document.createElement('li');
+      const newMarkupSpan = document.createElement('span');
+      // Add the related classes to the span
+      newMarkupSpan.classList.add('mark');
+      markupColors[tagName].split(' ').forEach((val) => {
+        newMarkupSpan.classList.add(val);
+      })
+      // Create a new text node with the tag name in it
+      const markupContent = document.createTextNode(rule.name);
+      // Append that content to the new span element
+      newMarkupSpan.appendChild(markupContent);
+      // Append that span to the new li element
+      newMarkup.appendChild(newMarkupSpan);
+      // And append the new li as a child of the markup legend
+      markupList.appendChild(newMarkup);
+    }
+  }
+  // Then replace the placeholder color tag with the appropriate one based on the markupColors object
+  return marked.replace("%%color%%", markupColors[tagName]);
 }
 
 // Function to replace closing tags with closing spans (not really that necessary to do this way, but i did it to allow adding extra stuff to closing spans if needed)

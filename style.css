@@ -18,18 +18,16 @@
   --border-radius: var(--half-spacing);
 
   --mark-bg: #f2f2f2;
-  --bold-mark: #ff0000;
-  --italic-mark: #00ff00;
-  --strike-mark: #0000ff;
-  --size-mark: #9966ff;
-  --opacity-mark: #707033;
-  --color-mark: #ff99ff;
-  --mark-mark: #00aa00;
-  --upper-mark: #cece00;
-  --lower-mark: #dd1166;
-  --blur-mark: #33dddd;
-  --rev-mark: #ff8000;
-  --noselect-mark: #dd22ff;
+  --mark-color-0: #e40303;
+  --mark-color-1: #ff8c00;
+  --mark-color-2: #ffed00;
+  --mark-color-3: #008026;
+  --mark-color-4: #004dff;
+  --mark-color-5: #750787;
+  --mark-color-6: #f5a9b8;
+  --mark-color-7: #5bcefa;
+  --mark-color-8: #613915;
+  --mark-color-9: #ff218c;
 }
 
 /* Font Definitions */
@@ -468,57 +466,69 @@ section {
   border-top-color: transparent;
 }
 
-.bold {
-  background-color: color-mix(in srgb, var(--bold-mark) 15%, var(--white) 85%);
-  border-color: var(--bold-mark) !important;
+.color0 {
+  background-color: color-mix(in srgb, var(--mark-color-0) 15%, var(--white) 85%);
+  border-color: var(--mark-color-0) !important;
 }
 
-.italic {
-  background-color: color-mix(in srgb, var(--italic-mark) 15%, var(--white) 85%);
-  border-color: var(--italic-mark) !important;
+.color1 {
+  background-color: color-mix(in srgb, var(--mark-color-1) 15%, var(--white) 85%);
+  border-color: var(--mark-color-1) !important;
 }
 
-.strike {
-  background-color: color-mix(in srgb, var(--strike-mark) 15%, var(--white) 85%);
-  border-color: var(--strike-mark) !important;
+.color2 {
+  background-color: color-mix(in srgb, var(--mark-color-2) 15%, var(--white) 85%);
+  border-color: var(--mark-color-2) !important;
 }
 
-.size {
-  background-color: color-mix(in srgb, var(--size-mark) 15%, var(--white) 85%);
-  border-color: var(--size-mark) !important;
+.color3 {
+  background-color: color-mix(in srgb, var(--mark-color-3) 15%, var(--white) 85%);
+  border-color: var(--mark-color-3) !important;
 }
 
-.opacity {
-  background-color: color-mix(in srgb, var(--opacity-mark) 15%, var(--white) 85%);
-  border-color: var(--opacity-mark) !important;
+.color4 {
+  background-color: color-mix(in srgb, var(--mark-color-4) 15%, var(--white) 85%);
+  border-color: var(--mark-color-4) !important;
 }
 
-.color {
-  background-color: color-mix(in srgb, var(--color-mark) 15%, var(--white) 85%);
-  border-color: var(--color-mark) !important;
+.color5 {
+  background-color: color-mix(in srgb, var(--mark-color-5) 15%, var(--white) 85%);
+  border-color: var(--mark-color-5) !important;
 }
 
-.marked {
-  background-color: color-mix(in srgb, var(--mark-mark) 15%, var(--white) 85%);
-  border-color: var(--mark-mark) !important;
+.color6 {
+  background-color: color-mix(in srgb, var(--mark-color-6) 15%, var(--white) 85%);
+  border-color: var(--mark-color-6) !important;
 }
 
-.upper {
-  background-color: color-mix(in srgb, var(--upper-mark) 15%, var(--white) 85%);
-  border-color: var(--upper-mark) !important;
+.color7 {
+  background-color: color-mix(in srgb, var(--mark-color-7) 15%, var(--white) 85%);
+  border-color: var(--mark-color-7) !important;
 }
 
-.lower {
-  background-color: color-mix(in srgb, var(--lower-mark) 15%, var(--white) 85%);
-  border-color: var(--lower-mark) !important;
+.color8 {
+  background-color: color-mix(in srgb, var(--mark-color-8) 15%, var(--white) 85%);
+  border-color: var(--mark-color-8) !important;
 }
 
-.blur {
-  background-color: color-mix(in srgb, var(--blur-mark) 15%, var(--white) 85%);
-  border-color: var(--blur-mark) !important;
+.color9 {
+  background-color: color-mix(in srgb, var(--mark-color-9) 15%, var(--white) 85%);
+  border-color: var(--mark-color-9) !important;
 }
 
-.rev {
+.underline0 {
+  border-bottom-style: solid !important;
+}
+
+.underline1 {
+  border-bottom-style: dashed !important;
+}
+
+.underline2 {
+  border-bottom-style: dotted !important;
+}
+
+/* .rev {
   background-color: color-mix(in srgb, var(--rev-mark) 15%, var(--white) 85%);
   border-color: var(--rev-mark) !important;
 }
@@ -528,7 +538,7 @@ section {
   border-color: var(--noselect-mark) !important;
   color: color-mix(in srgb, var(--white) 50%, var(--black) 50%);
   font-weight: bold;
-}
+} */
 
 .tag-error {
   border: solid 4px;
@@ -602,5 +612,5 @@ footer a {
 }
 
 footer a:visited {
-  color: var(--color-mark);
+  color: #ff99ff;
 }
