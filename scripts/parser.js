@@ -529,8 +529,8 @@ function parse(formData) {
       maxDepth = tagArray.length;
     }
 
-    // Check if the current item is a closing reverse tag and that there's at least 1 other reverse tag in the array
-    if (/\[\/rev\]/.exec(val) && revTags.length > 0) {
+    // Check if the current item is a closing reverse, and that there's at least 1 other reverse tag in the array, and that the most recent alt text isn't blank
+    if (/\[\/rev\]/.exec(val) && revTags.length > 0 && revAltText[revTags.length] !== undefined) {
       // If so, add the alt text of the just-closed reverse tag to the alt text of the reverse tag above it
       if (revTags.length % 2 === 0) {
         // If even layers deep, append to the end of the prior string
@@ -624,16 +624,19 @@ function applyMarkedTagColor(tag, rule, marked) {
   if (markupColors[tagName] == undefined && tagName != 'null') {
     // Add the tag into the catalog with the next color and underline style
     markupColors[tagName] = 'color' + (Object.keys(markupColors).length % 10) + ' underline' + Math.floor(Object.keys(markupColors).length / 10);
-    console.log('New: ', markupColors[tagName]);
     // Get the markup legend list
     const markupList = document.getElementById('markup-colors-list');
     // If the list is found
     if (markupList) {
-      // Create a new li element and span element
+      // Create all the new elements
       const newMarkup = document.createElement('li');
+      const newMarkupContainer = document.createElement('div');
+      const newMarkupSpanWrapper = document.createElement('span');
       const newMarkupSpan = document.createElement('span');
+      const newMarkupInputWrapper = document.createElement('span');
+      const newMarkupInput = document.createElement('input');
       // Add the related classes to the span
-      newMarkupSpan.classList.add('mark');
+      newMarkupSpan.classList.add(tagName, 'mark');
       markupColors[tagName].split(' ').forEach((val) => {
         newMarkupSpan.classList.add(val);
       })
@@ -641,14 +644,37 @@ function applyMarkedTagColor(tag, rule, marked) {
       const markupContent = document.createTextNode(rule.name);
       // Append that content to the new span element
       newMarkupSpan.appendChild(markupContent);
-      // Append that span to the new li element
-      newMarkup.appendChild(newMarkupSpan);
+      // Append that span to the protective wrapper
+      newMarkupSpanWrapper.appendChild(newMarkupSpan);
+      // Append the wrapper to the new div container element
+      newMarkupContainer.appendChild(newMarkupSpanWrapper);
+
+      // Set the name of the input element
+      newMarkupInput.name = tagName + '-mark';
+      // Add relevant class to the input
+      newMarkupInput.classList.add('color-input');
+      // Set the input type, pattern, and placeholder
+      newMarkupInput.type = 'text';
+      newMarkupInput.pattern = '[0-9a-fA-F]{6}';
+      newMarkupInput.placeholder = 'Default'
+      // Append the input to the new input wrapper element
+      newMarkupInputWrapper.appendChild(newMarkupInput);
+      // Add relevant class to the input wrapper element
+      newMarkupInputWrapper.classList.add('color-input-wrap');
+      // Append the input wrapper element to the new div container element
+      newMarkupContainer.appendChild(newMarkupInputWrapper);
+
+      // Add relevant class to the div container element
+      newMarkupContainer.classList.add('markup-container')
+      // Append the div container element to the new li element
+      newMarkup.appendChild(newMarkupContainer);
+
       // And append the new li as a child of the markup legend
       markupList.appendChild(newMarkup);
     }
   }
   // Then replace the placeholder color tag with the appropriate one based on the markupColors object
-  return marked.replace("%%color%%", markupColors[tagName]);
+  return marked.replace("%%color%%", markupColors[tagName] + ' ' + tagName);
 }
 
 // Function to replace closing tags with closing spans (not really that necessary to do this way, but i did it to allow adding extra stuff to closing spans if needed)

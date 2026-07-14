@@ -131,6 +131,29 @@ option {
   color: var(--not-black);
 }
 
+/* Color Input Styles */
+.color-input-wrap {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+}
+
+.color-input-wrap::before {
+  content: ' #';
+  position: absolute;
+  top: calc(var(--spacing) / 1.4);
+  left: calc(var(--half-spacing) + var(--quarter-spacing));
+}
+
+.color-input-wrap .color-input {
+  flex-grow: 1;
+  padding-left: calc(var(--spacing) * 1.5);
+}
+
+.color-input-wrap .color-input:invalid {
+  background: lightpink;
+}
+
 /* Fieldset Styles */
 fieldset {
   margin: 0;
@@ -245,28 +268,6 @@ section {
   right: var(--half-spacing);
   top: calc(var(--spacing) * 1.85);
   pointer-events: none;
-}
-
-.display-opts .color-input-wrap {
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-}
-
-.display-opts .color-input-wrap::before {
-  content: ' #';
-  position: absolute;
-  top: calc(var(--spacing) / 1.4);
-  left: calc(var(--half-spacing) + var(--quarter-spacing));
-}
-
-.display-opts .color-input-wrap .color-input {
-  flex-grow: 1;
-  padding-left: calc(var(--spacing) * 1.5);
-}
-
-.display-opts .color-input-wrap .color-input:invalid {
-  background: lightpink;
 }
 
 /* Notifs Section */
@@ -394,18 +395,46 @@ section {
 }
 
 /* Markup Column */
-.input-area .marked-footer ul {
+#markup-colors {
+  display: flex;
+  flex-direction: column;
+}
+
+#markup-colors li div.markup-container {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+#markup-colors .color-input-wrap {
+  margin-left: var(--half-spacing);
+}
+
+#markup-colors-form.hide .color-input-wrap,
+#markup-colors-form.hide .legend-text {
+  display: none;
+}
+
+#markup-colors .color-input {
+  flex-grow: unset;
+  field-sizing: content;
+}
+
+#markup-colors-list {
   list-style: inside;
   margin: 0;
+  margin-top: var(--half-spacing);
   padding: 0;
 }
 
-.input-area .marked-footer li {
+#markup-colors-list li {
   margin: var(--quarter-spacing) 0;
   padding: var(--quarter-spacing) var(--spacing);
 }
 
-/* Markup Column Highlighting Styles */
+#markup-edit-button:disabled {
+  filter: saturate(25%);
+}
+
 .legend-text {
   margin: var(--spacing) 0 0;
 }
@@ -415,6 +444,7 @@ section {
   white-space: nowrap;
 }
 
+/* Markup Column Highlighting Styles */
 .per-char span:not(.null-mark) {
   border-left: var(--border);
 }
@@ -431,31 +461,31 @@ section {
 
 .mark>.mark {
   border-bottom: var(--border);
-  background-color: transparent;
+  background-color: transparent !important;
   padding-bottom: 3px;
 }
 
 .mark>.mark>.mark {
   border-bottom: var(--border);
-  background-color: transparent;
+  background-color: transparent !important;
   padding-bottom: 6px;
 }
 
 .mark>.mark>.mark>.mark {
   border-bottom: var(--border);
-  background-color: transparent;
+  background-color: transparent !important;
   padding-bottom: 9px;
 }
 
 .mark>.mark>.mark>.mark>.mark {
   border-bottom: var(--border);
-  background-color: transparent;
+  background-color: transparent !important;
   padding-bottom: 12px;
 }
 
 .mark>.mark>.mark>.mark>.mark>.mark {
   border-bottom: var(--border);
-  background-color: transparent;
+  background-color: transparent !important;
   padding-bottom: 15px;
 }
 

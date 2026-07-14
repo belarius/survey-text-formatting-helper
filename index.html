@@ -80,22 +80,26 @@
         <div class="marked-footer">
           <details>
             <summary>Markup Legend</summary>
-            <div>
-              <span>Tags are dynamically added to the legend as they are used.</span>
-              <ul id="markup-colors-list">
-                <!-- <li><span class="bold mark">Bold</span></li>
-                <li><span class="italic mark">Italic</span></li>
-                <li><span class="strike mark">Strikethrough</span></li>
-                <li><span class="size mark">Font Size</span></li>
-                <li><span class="noselect mark">Unselectable Text</span></li>
-                <li><span class="opacity mark">Opacity</span></li>
-                <li><span class="color mark">Colored Text</span></li>
-                <li><span class="marked mark">Marked Text</span></li>
-                <li><span class="upper mark">Uppercase</span></li>
-                <li><span class="lower mark">Lowercase</span></li>
-                <li><span class="blur mark">Blurred Text</span></li>
-                <li><span class="rev mark">Reversed Text</span></li> -->
-              </ul>
+            <div id="markup-colors">
+              <form id="markup-colors-form" class="hide">
+                <button id="markup-edit-button" type="button" onclick="toggleMarkupForm()"><strong id="markup-edit-button-text">edit markup colors</strong></button>
+                <p class="legend-text">Custom colors will reset when the page is reloaded.</p>
+                <ul id="markup-colors-list">
+                  <!-- <li><span class="bold mark">Bold</span></li>
+                  <li><span class="italic mark">Italic</span></li>
+                  <li><span class="strike mark">Strikethrough</span></li>
+                  <li><span class="size mark">Font Size</span></li>
+                  <li><span class="noselect mark">Unselectable Text</span></li>
+                  <li><span class="opacity mark">Opacity</span></li>
+                  <li><span class="color mark">Colored Text</span></li>
+                  <li><span class="marked mark">Marked Text</span></li>
+                  <li><span class="upper mark">Uppercase</span></li>
+                  <li><span class="lower mark">Lowercase</span></li>
+                  <li><span class="blur mark">Blurred Text</span></li>
+                  <li><span class="rev mark">Reversed Text</span></li> -->
+                </ul>
+              </form>
+              <p class="legend-text">Tags are dynamically added to the legend as they are used.</p>
               <p class="legend-text">Do-nothing tags are marked with tall black bars →&nbsp;<span class="null mark"></span></p>
               <p class="legend-text">Do-nothing tags containing text look like this →&nbsp;<span class="null mark" style="white-space: nowrap;">Sample text</span></p>
               <p class="legend-text">If the 'Per-Character Formatting' option is turned on, all individual characters affected by this will gain bar separators →&nbsp;<span class="per-char"><span class="mark">L</span><span class="mark">i</span><span class="mark">k</span><span class="mark">e</span><span class="mark"> </span><span class="mark">t</span><span class="mark">h</span><span class="mark">i</span><span class="mark">s</span></span></p>
