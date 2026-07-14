@@ -293,6 +293,7 @@
           <blockquote>This text <span style="font-size:0; -webkit-user-select: none; -ms-user-select: none; user-select:none;">flip-flops</span><span style="direction:rtl; unicode-bidi:bidi-override;" aria-hidden="true">spolf<span style="direction:ltr; unicode-bidi:bidi-override;" aria-hidden="true">flip-</span></span> the text direction.</blockquote>
           <p>This formatting can behave in unexpected ways if used extensively. Reversed text blocks with more than one word may interact strangely with text wrapping; this is due to the styling used to visually reverse text while keeping the actual text as entered. Additionally, this formatting ignores the 'Per-Character Formatting' toggle for similar reasons.</p>
           <p>If the 'Include Screen Reader Accessibility' toggle is on, the generated output will instruct screen readers to read the visually reversed text (i.e., if the input text is [rev]stop[/rev], the output will visually show "pots" and a screen reader will read out "pots" to the user).</p>
+          <p>Reverse tags will also take priority in the order of operations when tags are applied. This means they will always appear first in the markup column on any text they are applied to, regardless of when they were declared relative to other tags.</p>
         </div>
       </details>
     </section>
