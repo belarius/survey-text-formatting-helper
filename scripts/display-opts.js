@@ -43,7 +43,7 @@ function getMarkupEditButton() {
   return document.getElementById('markup-edit-button');
 }
 
-// Function to set up the input listener
+// Function to set up the input listeners
 function listenToColorSelect() {
   // Get the color input fields
   textColorInput = getTextColorInput();
@@ -107,11 +107,27 @@ function listenToColorSelect() {
     // Start the observer
     markupColorsListListener.observe(markupColorsList, { childList: true });
   }
-  // Call the function to set up the form listener
-  listenToMarkupForm();
+  if (markupColorsForm && !markupFormListener) {
+    // If the markup form exists, add an event listener for any input events (meaning any inputs in the markup form are changed)
+    markupFormListener = markupColorsForm.addEventListener("input", (e) => {
+      // Prevent page reload
+      e.preventDefault();
+      // When any inputs on the form are changed, request to submit the form
+      markupColorsForm.requestSubmit();
+    });
+  }
+  if (markupColorsForm && !markupFormSubmit) {
+    // If the markup form exists, add an event listener for any submit events (called from the previous listener)
+    markupFormSubmit = markupColorsForm.addEventListener("submit", (e) => {
+      // Prevent page reload
+      e.preventDefault();
+      // Call the function to handle the changes to the form and apply them to the page
+      markupColorsUpdate(e);
+    });
+  }
 }
 
-// Function to update the page to reflect the selected font type
+// Function to update the page to reflect the selected background/font color for the output section
 function colorUpdate(event, field) {
   // Check if the value in the field is valid
   if (event.target.validity.valid && /[0-9a-fA-F]{6}/.exec(event.target.value)) {
@@ -177,59 +193,40 @@ function setFormValues() {
 }
 
 // Function to create the markup legend form
-function listenToMarkupForm() {
-  // If the form exists and the form listener hasn't been set up
-  if (markupColorsForm && !markupFormListener) {
-    // Set up the form listener
-    markupFormListener = markupColorsForm.addEventListener("input", (e) => {
-      // Prevent page reload
-      e.preventDefault();
-      // When any inputs on the form are changed, request to submit the form
-      markupColorsForm.requestSubmit();
-    });
-  }
-
-  // If the form exists and the submit listener hasn't been set up
-  if (markupColorsForm && !markupFormSubmit) {
-    // Set up the submit listener
-    markupFormSubmit = markupColorsForm.addEventListener("submit", (e) => {
-      // Prevent page reload
-      e.preventDefault();
-      // When the form is submitted, create a FormData object with the current values in the form
-      const formData = new FormData(e.target);
-      // Iterate through each value
-      formData.forEach((val, idx) => {
-        // Get the CSS rule selector from the input field's name
-        const selector = '.' + idx.split('-').join('.');
-        // Create a storage var for the matching index
-        let ruleIndex;
-        // Iterate through the stylesheet rules, looking for any rules where the selector matches the selector built from the input field's name
-        for (let i = 0; i < stylesheet.cssRules.length; i++) {
-          // If there is a rule where the selectors match
-          if (stylesheet.cssRules[i]['selectorText'] === selector) {
-            // Save that index value so it can be removed/edited
-            ruleIndex = i;
-          }
-        }
-        // If the index value is not undefined, it means that it found a matching rule
-        if (ruleIndex !== undefined) {
-          // So we delete the rule so that it can either be cleared or changed later, depending on the value of the input field
-          stylesheet.deleteRule(ruleIndex);
-          // Also delete the value from the formVals object so it isn't stored anymore
-          delete formVals[idx];
-        }
-        // If there is a value set in the form input field, we need to add it to the stylesheet
-        if (val) {
-          // Create a new CSS rule with the color value in the field and insert it into the stylesheet 
-          stylesheet.insertRule(selector + '{background-color: color-mix(in srgb, #' + val + ' 15%, var(--white) 85%); border-color: #' + val + ' !important;}');
-          // Also save the value into the formVals object so it is stored
-          formVals[idx] = val;
-        }
-      });
-    });
-  }
+function markupColorsUpdate(e) {
+  // When the form is submitted, create a FormData object with the current values in the form
+  const formData = new FormData(e.target);
+  // Iterate through each value
+  formData.forEach((val, idx) => {
+    // Get the CSS rule selector from the input field's name
+    const selector = '.' + idx.split('-').join('.');
+    // Create a storage var for the matching index
+    let ruleIndex;
+    // Iterate through the stylesheet rules, looking for any rules where the selector matches the selector built from the input field's name
+    for (let i = 0; i < stylesheet.cssRules.length; i++) {
+      // If there is a rule where the selectors match
+      if (stylesheet.cssRules[i]['selectorText'] === selector) {
+        // Save that index value so it can be removed/edited
+        ruleIndex = i;
+      }
+    }
+    // If the index value is not undefined, it means that it found a matching rule
+    if (ruleIndex !== undefined) {
+      // So we delete the rule so that it can either be cleared or changed later, depending on the value of the input field
+      stylesheet.deleteRule(ruleIndex);
+      // Also delete the value from the formVals object so it isn't stored anymore
+      delete formVals[idx];
+    }
+    // If there is a value set in the form input field, we need to add it to the stylesheet
+    if (val) {
+      // Create a new CSS rule with the color value in the field and insert it into the stylesheet 
+      stylesheet.insertRule(selector + '{background-color: color-mix(in srgb, #' + val + ' 15%, var(--white) 85%); border-color: #' + val + ' !important;}');
+      // Also save the value into the formVals object so it is stored
+      formVals[idx] = val;
+    }
+  });
 }
 
 // !--- MAIN ---!
-// Attempt to set up the select listener, from which all else flows
+// Attempt to set up the color select listeners, from which all else flows
 listenToColorSelect();
