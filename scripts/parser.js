@@ -482,6 +482,59 @@ function parse(formData) {
     } else {
       // Otherwise, it's just raw input text
       let tempMarked = '', tempOutput = '';
+
+      // Before anything, check if there are any newline characters in the input and if we're inside any reverse tags
+      if (/(\n+?)/.exec(val) && revTags.length > 0) {
+        // If so, we need to do some manual manipulation of the input array
+        // First, split the current value at all the newlines
+        let valSplit = val.split(/(\n)/);
+        let valArr = [];
+        let prevNew = false;
+        // Iterate through that split array
+        for (let i = 0; i < valSplit.length; i++) {
+          // If the item is a newline
+          if (valSplit[i] === '\n') {
+            // And the previous item wasn't a newline
+            if (!prevNew) {
+              // Push the newline to the var array
+              valArr.push(valSplit[i]);
+              prevNew = true;
+            } else {
+              // Otherwise, add it to the previous newlines in the var array
+              valArr[valArr.length - 1] = valArr.at(-1) + valSplit[i];
+            }
+          // If not a newline, and is longer than 0 characters
+          } else if (valSplit[i].length > 0) {
+            // Push the text to the var array
+            valArr.push(valSplit[i]);
+            prevNew = false;
+          }
+        }
+        // With the reconstructed var as an array, iterate through it
+        for (let i = valArr.length - 1; i > 0; i--) {
+          // If the item has any newlines in it
+          if (/(\n+?)/.exec(valArr[i])) {
+            // Then push to the string array closing tags for all reverse tags, then the newlines, then opening tags for all reverse tags
+            // Since splicing at an index pushes things after that index, we do this in reverse
+            // So first, open the new reverse tags
+            for (let i = 0; i < revTags.length; i++) {
+              strArray.splice(idx + 1, 0, '[rev]');
+            }
+            // Add in the newline characters
+            strArray.splice(idx + 1, 0, valArr[i]);
+            // And close all existing reverse tags
+            for (let i = 0; i < revTags.length; i++) {
+              strArray.splice(idx + 1, 0, '[/rev]');
+            }
+          } else {
+            // Otherwise, we just insert the raw text item in at the current index
+            strArray.splice(idx + 1, 0, valArr[i]);
+          }
+        }
+        // Finally, we set the current value to just the first part of the val array so that this current step doesn't duplicate anything
+        val = valArr[0];
+      }
+
       // If the per character toggle is on, we need to do some extra funky stuff
       // If there's a most recent opened tag and it's not the reverse tag, do the per character stuff
       if (toggles.perChar && tagArray.at(-1) && /\[rev\]/.exec(tagArray.at(-1)) === null) {
@@ -510,10 +563,10 @@ function parse(formData) {
           && tagArray.findLastIndex((elem) => /\[blur:/.exec(elem)) < 0
           && tagArray.findLastIndex((elem) => /\[size:0+?(?:%|px|rem|em)\]/.exec(elem)) < 0
           && tagArray.findLastIndex((elem) => /\[opacity:(?:0|0.0+?)\]/.exec(elem)) < 0) {
-          // If an even number of reverse tags
           if (!revAltText[revTags.length - 1]) {
             revAltText[revTags.length - 1] = '';
           }
+          // If an even number of reverse tags
           if (revTags.length % 2 === 0) {
             // Add the raw input text to the alt text string as is - no need to reverse it
             revAltText[revTags.length - 1] = revAltText[revTags.length - 1] + val;
@@ -534,10 +587,10 @@ function parse(formData) {
       // If so, add the alt text of the just-closed reverse tag to the alt text of the reverse tag above it
       if (revTags.length % 2 === 0) {
         // If even layers deep, append to the end of the prior string
-        revAltText[revTags.length - 1] = revAltText[revTags.length - 1] + revAltText[revTags.length];
+        revAltText[revTags.length - 1] = (revAltText[revTags.length - 1] ? revAltText[revTags.length - 1] : '') + revAltText[revTags.length];
       } else {
         // If odd layers deep, prepend to the start of the prior string
-        revAltText[revTags.length - 1] = revAltText[revTags.length] + revAltText[revTags.length - 1];
+        revAltText[revTags.length - 1] = revAltText[revTags.length] + (revAltText[revTags.length - 1] ? revAltText[revTags.length - 1] : '');
       }
       // And empty the alt text of the just-closed reverse tag
       revAltText[revTags.length] = undefined;
