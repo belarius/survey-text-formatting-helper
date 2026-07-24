@@ -368,8 +368,8 @@ function parse(formData) {
   // Create an empty tag array just for the reverse tags for special nesting necessities, and an empty string for assembling accessibility alt text
   let revTags = [];
   let revAltText = [];
-  // Iterate through the input string array
-  strArray.forEach((val, idx) => {
+  // Iterate through the input string array (using for...of instead of forEach because the array may possibly be expanded within the loop)
+  for (let [idx, val] of strArray.entries()) {
     // If the current chunk in the array is a tag
     if (tagRegex.exec(val)) {
       // If the current chunk is a closing tag
@@ -603,7 +603,7 @@ function parse(formData) {
       // And then empty the alt text string for the next time it's needed
       revAltText = [];
     }
-  });
+  }
 
   // Variably adjust the line height of the markup column - add 0.15 to the base line height for every layer deep the input stacked (up to 6)
   const heightAdjust = 0.15 * Math.min(Math.max(maxDepth, 0), 6);
