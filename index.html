@@ -14,7 +14,8 @@
 
 <body id="top">
   <header>
-    <h1><span style="font-weight: bold; text-transform: lowercase;">Survey</span><span style="font-size:0;" aria-hidden="true"> Hidden </span><span style="font-style: italic; font-size: 75%; background-color:#191919; color: #FFF9F2; text-transform: uppercase;">Text </span>&nbsp;<span style="color:#83254f;">F<span style="font-size:0; -webkit-user-select: none; -ms-user-select: none; user-select:none;"">orma</span><span style="direction:rtl; unicode-bidi:bidi-override;" aria-hidden="true">amro</span>tting</span> <span style="font-weight: bold;">Helper<span style="opacity: 0;" aria-hidden="true">!</span></span></h1>
+    <h1><span style="font-weight: bold; text-transform: lowercase;">Survey</span><span style="font-size:0;" aria-hidden="true"> Hidden </span><span style="font-style: italic; font-size: 75%; background-color:#191919; color: #FFF9F2; text-transform: uppercase;">Text </span>&nbsp;<span style="color:#83254f;">F<span style="font-size:0; -webkit-user-select: none; -ms-user-select: none; user-select:none;"">orma</span><span style="direction:rtl; unicode-bidi:bidi-override;" aria-hidden="true">amro</span>tting</span> <span style="font-weight: bold;">Helper<span style="opacity: 0; font-size: 6px;" aria-hidden="true">!</span></span><span style="font-size: 50%;"> v1.2.0</span></h1>
+    <h2>Created by <a href="https://belarius.github.io/projects/" target="_blank">Greg Jensen</a> and <a href="https://kaydes.study/webdev" target="_blank">Kayde Arcane</a></h2>
   </header>
   <main>
     <!-- Section - Brief about blurb -->
@@ -80,21 +81,26 @@
         <div class="marked-footer">
           <details>
             <summary>Markup Legend</summary>
-            <div>
-              <ul>
-                <li><span class="bold mark">Bold</span></li>
-                <li><span class="italic mark">Italic</span></li>
-                <li><span class="strike mark">Strikethrough</span></li>
-                <li><span class="size mark">Font Size</span></li>
-                <li><span class="noselect mark">Unselectable Text</span></li>
-                <li><span class="opacity mark">Opacity</span></li>
-                <li><span class="color mark">Colored Text</span></li>
-                <li><span class="marked mark">Marked Text</span></li>
-                <li><span class="upper mark">Uppercase</span></li>
-                <li><span class="lower mark">Lowercase</span></li>
-                <li><span class="blur mark">Blurred Text</span></li>
-                <li><span class="rev mark">Reversed Text</span></li>
-              </ul>
+            <div id="markup-colors">
+              <form id="markup-colors-form" class="hide">
+                <button id="markup-edit-button" type="button" onclick="toggleMarkupForm()"><strong id="markup-edit-button-text">edit markup colors</strong></button>
+                <p class="legend-text">Custom colors will reset when the page is reloaded.</p>
+                <ul id="markup-colors-list">
+                  <!-- <li><span class="bold mark">Bold</span></li>
+                  <li><span class="italic mark">Italic</span></li>
+                  <li><span class="strike mark">Strikethrough</span></li>
+                  <li><span class="size mark">Font Size</span></li>
+                  <li><span class="noselect mark">Unselectable Text</span></li>
+                  <li><span class="opacity mark">Opacity</span></li>
+                  <li><span class="color mark">Colored Text</span></li>
+                  <li><span class="marked mark">Marked Text</span></li>
+                  <li><span class="upper mark">Uppercase</span></li>
+                  <li><span class="lower mark">Lowercase</span></li>
+                  <li><span class="blur mark">Blurred Text</span></li>
+                  <li><span class="rev mark">Reversed Text</span></li> -->
+                </ul>
+              </form>
+              <p class="legend-text">Tags are dynamically added to the legend as they are used.</p>
               <p class="legend-text">Do-nothing tags are marked with tall black bars →&nbsp;<span class="null mark"></span></p>
               <p class="legend-text">Do-nothing tags containing text look like this →&nbsp;<span class="null mark" style="white-space: nowrap;">Sample text</span></p>
               <p class="legend-text">If the 'Per-Character Formatting' option is turned on, all individual characters affected by this will gain bar separators →&nbsp;<span class="per-char"><span class="mark">L</span><span class="mark">i</span><span class="mark">k</span><span class="mark">e</span><span class="mark"> </span><span class="mark">t</span><span class="mark">h</span><span class="mark">i</span><span class="mark">s</span></span></p>
@@ -288,6 +294,7 @@
           <blockquote>This text <span style="font-size:0; -webkit-user-select: none; -ms-user-select: none; user-select:none;">flip-flops</span><span style="direction:rtl; unicode-bidi:bidi-override;" aria-hidden="true">spolf<span style="direction:ltr; unicode-bidi:bidi-override;" aria-hidden="true">flip-</span></span> the text direction.</blockquote>
           <p>This formatting can behave in unexpected ways if used extensively. Reversed text blocks with more than one word may interact strangely with text wrapping; this is due to the styling used to visually reverse text while keeping the actual text as entered. Additionally, this formatting ignores the 'Per-Character Formatting' toggle for similar reasons.</p>
           <p>If the 'Include Screen Reader Accessibility' toggle is on, the generated output will instruct screen readers to read the visually reversed text (i.e., if the input text is [rev]stop[/rev], the output will visually show "pots" and a screen reader will read out "pots" to the user).</p>
+          <p>Reverse tags will also take priority in the order of operations when tags are applied. This means they will always appear first in the markup column on any text they are applied to, regardless of when they were declared relative to other tags.</p>
         </div>
       </details>
     </section>

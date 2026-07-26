@@ -23,9 +23,13 @@ const htmlRegex = /(<([^>]+)>)/gi;
 // Set up a variable to hold the input listener and a counter for how many attempts the listener setup function has made
 let inputListener, formSubmit, inputListenerSetupTries = 0;
 
+// Set up object for color marking rules
+let markupColors = {};
+
 const parseRules = [
   // Null
   {
+    name: 'Null',
     // Detects instances of [null]
     regex: /\[null\]/g,
     // Intermediate markup
@@ -38,10 +42,11 @@ const parseRules = [
   },
   // Bold
   {
+    name: 'Bold',
     // Detects instances of [bold]
     regex: /\[bold\]/g,
     // Intermediate markup
-    marked: '<span class="bold mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-weight:bold;">
     out: function (str) {
       // Set what the HTML element string is
@@ -51,10 +56,11 @@ const parseRules = [
   },
   // Italic
   {
+    name: 'Italic',
     // Detects instances of [italic]
     regex: /\[italic\]/g,
     // Intermediate markup
-    marked: '<span class="italic mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-style:italic;">
     out: function (str) {
       // Set what the HTML element string is
@@ -64,10 +70,11 @@ const parseRules = [
   },
   // Strikethrough
   {
+    name: 'Strikethrough',
     // Detects instances of [strike]val1[/strike]
     regex: /\[strike\]/g,
     // Intermediate markup
-    marked: '<span class="strike mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-decoration:line-through;">
     out: function (str) {
       // Set what the HTML element string is
@@ -79,10 +86,11 @@ const parseRules = [
   },
   // No Select
   {
+    name: 'Unselectable Text',
     // Detects instances of [noselect]
     regex: /\[noselect\]/g,
     // Intermediate markup
-    marked: '<span class="noselect mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="-webkit-user-select: none; -ms-user-select: none; user-select:none;">
     out: function (str) {
       // Set what the HTML element string is
@@ -92,10 +100,11 @@ const parseRules = [
   },
   // Font Size
   {
+    name: 'Font Size',
     // Detects instances of [size:val1]
     regex: /\[size:((?:\d*?|\d+?.\d+?)(?:%|px|rem|em))\]/g,
     // Intermediate markup
-    marked: '<span class="size mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="font-size:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -108,10 +117,11 @@ const parseRules = [
   },
   // Opacity
   {
+    name: 'Opacity',
     // Detects instances of [opacity:val1]
     regex: /\[opacity:((?:0|1)(?:\.\d+?)*?)\]/g,
     // Intermediate markup
-    marked: '<span class="opacity mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="opacity:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -124,10 +134,11 @@ const parseRules = [
   },
   // Text Color
   {
+    name: 'Colored Text',
     // Detects instances of [color:val1]
     regex: /\[color:(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}))\]/g,
     // Intermediate markup
-    marked: '<span class="color mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="color:val1;">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -139,10 +150,11 @@ const parseRules = [
   },
   // Highlight Color
   {
+    name: 'Marked Text',
     // Detects instances of [mark:val1]
     regex: /\[mark:(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}))\]/g,
     // Intermediate markup
-    marked: '<span class="marked mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="background-color:val1;">
     out: function (str, group1, group2) {
       // Set what the HTML element string is
@@ -154,10 +166,11 @@ const parseRules = [
   },
   // Uppercase
   {
+    name: 'Uppercase',
     // Detects instances of [upper]
     regex: /\[upper\]/g,
     // Intermediate markup
-    marked: '<span class="upper mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-transform:uppercase;">
     out: function (str) {
       // Set what the HTML element string is
@@ -167,10 +180,11 @@ const parseRules = [
   },
   // Lowercase
   {
+    name: 'Lowercase',
     // Detects instances of [lower]
     regex: /\[lower\]/g,
     // Intermediate markup
-    marked: '<span class="lower mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="text-transform:lowercase;">
     out: function (str) {
       // Set what the HTML element string is
@@ -180,10 +194,11 @@ const parseRules = [
   },
   // Blurred
   {
+    name: 'Blurred Text',
     // Detects instances of [blur:val1]
     regex: /\[blur:(\d+(?:\.\d+?)*?(?:px|rem|em))\]/g,
     // Intermediate markup
-    marked: '<span class="blur mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="filter:blur(val1);">
     out: function (str, group1) {
       // Set what the HTML element string is
@@ -196,10 +211,11 @@ const parseRules = [
   },
   // Reversed
   {
+    name: 'Reversed Text',
     // Detects instances of [rev]
     regex: /\[rev\]/g,
     // Intermediate markup
-    marked: '<span class="rev mark">',
+    marked: '<span class="%%color%% mark">',
     // Replaces with <span style="direction:rtl; unicode-bidi:bidi-override;">
     // Optionally adds a second span that has the readable value but is invisible if the accessibility toggle is on
     out: function (str) {
@@ -332,6 +348,15 @@ function parse(formData) {
   // Create variables for the eventual outputs
   let marked = '', output = '';
 
+  // Clear the markup color object
+  markupColors = {};
+  const markupList = document.getElementById('markup-colors-list');
+  if (markupList) {
+    while (markupList.firstChild) {
+      markupList.removeChild(markupList.lastChild);
+    }
+  }
+
   // Set the regex that detects any square bracket tags
   let tagRegex = /(\[(?:\/?[^\]^\/^ ^\n]+?)\])/;
 
@@ -343,8 +368,8 @@ function parse(formData) {
   // Create an empty tag array just for the reverse tags for special nesting necessities, and an empty string for assembling accessibility alt text
   let revTags = [];
   let revAltText = [];
-  // Iterate through the input string array
-  strArray.forEach((val, idx) => {
+  // Iterate through the input string array (using for...of instead of forEach because the array may possibly be expanded within the loop)
+  for (let [idx, val] of strArray.entries()) {
     // If the current chunk in the array is a tag
     if (tagRegex.exec(val)) {
       // If the current chunk is a closing tag
@@ -457,6 +482,59 @@ function parse(formData) {
     } else {
       // Otherwise, it's just raw input text
       let tempMarked = '', tempOutput = '';
+
+      // Before anything, check if there are any newline characters in the input and if we're inside any reverse tags
+      if (/(\n+?)/.exec(val) && revTags.length > 0) {
+        // If so, we need to do some manual manipulation of the input array
+        // First, split the current value at all the newlines
+        let valSplit = val.split(/(\n)/);
+        let valArr = [];
+        let prevNew = false;
+        // Iterate through that split array
+        for (let i = 0; i < valSplit.length; i++) {
+          // If the item is a newline
+          if (valSplit[i] === '\n') {
+            // And the previous item wasn't a newline
+            if (!prevNew) {
+              // Push the newline to the var array
+              valArr.push(valSplit[i]);
+              prevNew = true;
+            } else {
+              // Otherwise, add it to the previous newlines in the var array
+              valArr[valArr.length - 1] = valArr.at(-1) + valSplit[i];
+            }
+          // If not a newline, and is longer than 0 characters
+          } else if (valSplit[i].length > 0) {
+            // Push the text to the var array
+            valArr.push(valSplit[i]);
+            prevNew = false;
+          }
+        }
+        // With the reconstructed var as an array, iterate through it
+        for (let i = valArr.length - 1; i > 0; i--) {
+          // If the item has any newlines in it
+          if (/(\n+?)/.exec(valArr[i])) {
+            // Then push to the string array closing tags for all reverse tags, then the newlines, then opening tags for all reverse tags
+            // Since splicing at an index pushes things after that index, we do this in reverse
+            // So first, open the new reverse tags
+            for (let i = 0; i < revTags.length; i++) {
+              strArray.splice(idx + 1, 0, '[rev]');
+            }
+            // Add in the newline characters
+            strArray.splice(idx + 1, 0, valArr[i]);
+            // And close all existing reverse tags
+            for (let i = 0; i < revTags.length; i++) {
+              strArray.splice(idx + 1, 0, '[/rev]');
+            }
+          } else {
+            // Otherwise, we just insert the raw text item in at the current index
+            strArray.splice(idx + 1, 0, valArr[i]);
+          }
+        }
+        // Finally, we set the current value to just the first part of the val array so that this current step doesn't duplicate anything
+        val = valArr[0];
+      }
+
       // If the per character toggle is on, we need to do some extra funky stuff
       // If there's a most recent opened tag and it's not the reverse tag, do the per character stuff
       if (toggles.perChar && tagArray.at(-1) && /\[rev\]/.exec(tagArray.at(-1)) === null) {
@@ -485,10 +563,10 @@ function parse(formData) {
           && tagArray.findLastIndex((elem) => /\[blur:/.exec(elem)) < 0
           && tagArray.findLastIndex((elem) => /\[size:0+?(?:%|px|rem|em)\]/.exec(elem)) < 0
           && tagArray.findLastIndex((elem) => /\[opacity:(?:0|0.0+?)\]/.exec(elem)) < 0) {
-          // If an even number of reverse tags
           if (!revAltText[revTags.length - 1]) {
             revAltText[revTags.length - 1] = '';
           }
+          // If an even number of reverse tags
           if (revTags.length % 2 === 0) {
             // Add the raw input text to the alt text string as is - no need to reverse it
             revAltText[revTags.length - 1] = revAltText[revTags.length - 1] + val;
@@ -504,15 +582,15 @@ function parse(formData) {
       maxDepth = tagArray.length;
     }
 
-    // Check if the current item is a closing reverse tag and that there's at least 1 other reverse tag in the array
-    if (/\[\/rev\]/.exec(val) && revTags.length > 0) {
+    // Check if the current item is a closing reverse, and that there's at least 1 other reverse tag in the array, and that the most recent alt text isn't blank
+    if (/\[\/rev\]/.exec(val) && revTags.length > 0 && revAltText[revTags.length] !== undefined) {
       // If so, add the alt text of the just-closed reverse tag to the alt text of the reverse tag above it
       if (revTags.length % 2 === 0) {
         // If even layers deep, append to the end of the prior string
-        revAltText[revTags.length - 1] = revAltText[revTags.length - 1] + revAltText[revTags.length];
+        revAltText[revTags.length - 1] = (revAltText[revTags.length - 1] ? revAltText[revTags.length - 1] : '') + revAltText[revTags.length];
       } else {
         // If odd layers deep, prepend to the start of the prior string
-        revAltText[revTags.length - 1] = revAltText[revTags.length] + revAltText[revTags.length - 1];
+        revAltText[revTags.length - 1] = revAltText[revTags.length] + (revAltText[revTags.length - 1] ? revAltText[revTags.length - 1] : '');
       }
       // And empty the alt text of the just-closed reverse tag
       revAltText[revTags.length] = undefined;
@@ -525,7 +603,7 @@ function parse(formData) {
       // And then empty the alt text string for the next time it's needed
       revAltText = [];
     }
-  });
+  }
 
   // Variably adjust the line height of the markup column - add 0.15 to the base line height for every layer deep the input stacked (up to 6)
   const heightAdjust = 0.15 * Math.min(Math.max(maxDepth, 0), 6);
@@ -580,10 +658,76 @@ function replaceOpenTag(tag) {
   parseRules.forEach((rule) => {
     // First for the marked version
     marked = marked.replace(rule.regex, rule.marked);
+    // If it hits the current matching regex rule
+    if (rule.regex.exec(tag)) {
+      // Call to the applyMarkedTagColor function to get the correct color mark classes
+      marked = applyMarkedTagColor(tag, rule, marked);
+    }
     // Then for the output version
     output = output.replace(rule.regex, rule.out);
   });
   return { marked: marked, output: output };
+}
+
+// Function to apply dynamic color class to marked tags
+function applyMarkedTagColor(tag, rule, marked) {
+  // Extract the current tag name from the input tag
+  let tagName = tag.replace(/(\[|\/|\])/g, '').split(':')[0];
+  // If that tag isn't in the object of cataloged markupColors
+  if (markupColors[tagName] == undefined && tagName != 'null') {
+    // Add the tag into the catalog with the next color and underline style
+    markupColors[tagName] = 'color' + (Object.keys(markupColors).length % 10) + ' underline' + Math.floor(Object.keys(markupColors).length / 10);
+    // Get the markup legend list
+    const markupList = document.getElementById('markup-colors-list');
+    // If the list is found
+    if (markupList) {
+      // Create all the new elements
+      const newMarkup = document.createElement('li');
+      const newMarkupContainer = document.createElement('div');
+      const newMarkupSpanWrapper = document.createElement('span');
+      const newMarkupSpan = document.createElement('span');
+      const newMarkupInputWrapper = document.createElement('span');
+      const newMarkupInput = document.createElement('input');
+      // Add the related classes to the span
+      newMarkupSpan.classList.add(tagName, 'mark');
+      markupColors[tagName].split(' ').forEach((val) => {
+        newMarkupSpan.classList.add(val);
+      })
+      // Create a new text node with the tag name in it
+      const markupContent = document.createTextNode(rule.name);
+      // Append that content to the new span element
+      newMarkupSpan.appendChild(markupContent);
+      // Append that span to the protective wrapper
+      newMarkupSpanWrapper.appendChild(newMarkupSpan);
+      // Append the wrapper to the new div container element
+      newMarkupContainer.appendChild(newMarkupSpanWrapper);
+
+      // Set the name of the input element
+      newMarkupInput.name = tagName + '-mark';
+      // Add relevant class to the input
+      newMarkupInput.classList.add('color-input');
+      // Set the input type, pattern, and placeholder
+      newMarkupInput.type = 'text';
+      newMarkupInput.pattern = '[0-9a-fA-F]{6}';
+      newMarkupInput.placeholder = 'Default'
+      // Append the input to the new input wrapper element
+      newMarkupInputWrapper.appendChild(newMarkupInput);
+      // Add relevant class to the input wrapper element
+      newMarkupInputWrapper.classList.add('color-input-wrap');
+      // Append the input wrapper element to the new div container element
+      newMarkupContainer.appendChild(newMarkupInputWrapper);
+
+      // Add relevant class to the div container element
+      newMarkupContainer.classList.add('markup-container')
+      // Append the div container element to the new li element
+      newMarkup.appendChild(newMarkupContainer);
+
+      // And append the new li as a child of the markup legend
+      markupList.appendChild(newMarkup);
+    }
+  }
+  // Then replace the placeholder color tag with the appropriate one based on the markupColors object
+  return marked.replace("%%color%%", markupColors[tagName] + ' ' + tagName);
 }
 
 // Function to replace closing tags with closing spans (not really that necessary to do this way, but i did it to allow adding extra stuff to closing spans if needed)
